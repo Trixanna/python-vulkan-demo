@@ -14,17 +14,43 @@ import vulkan as vk
 
 application_info = vk.VkApplicationInfo()
 
-instance_create_info = vk.VkInstanceCreateInfo(
-    pApplicationInfo=application_info,
-    enabledLayerCount=0,
-    enabledExtensionCount=0
-)
+def init_instance():
+    ''' Most things set to default values courtesy of the vulkan wrapper to the API '''
+    instance_create_info = vk.VkInstanceCreateInfo(
+        sType=vk.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+        pApplicationInfo=application_info,
+        enabledLayerCount=0,
+        enabledExtensionCount=0
+    )
 
-#allocation = vk.vkAllocateMemory()
+    #allocation = vk.vkAllocateMemory()
+    instance = vk.vkCreateInstance(
+        instance_create_info,
+        pAllocator=None
+    )
 
-instance = vk.vkCreateInstance(
-    instance_create_info,
-    pAllocator=None
-)
+    if vk.VK_SUCCESS == 0:
+        print("debug: instance creation success")
+    else:
+        print("Failed to create instance. Error: {}".format(vk.VK_SUCCESS))
 
-print("incomplete")
+'''
+device_info = vk.VkDeviceCreateInfo(
+    sType=vk.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+    pNext=None,
+    flags=None,
+    queueCreateInfoCount=0,
+    pQueueCreateInfos=None,
+    enabledExtensionCount=0,
+    ppEnabledLayerNames=None,
+    ppEnabledExtensionNames=None,
+    pEnabledFeatures=None,
+    enabledLayerCount=0
+)'''
+
+def main():
+    ''' Temp main runner for development '''
+    init_instance()
+
+if __name__ == '__main__':
+    main()
