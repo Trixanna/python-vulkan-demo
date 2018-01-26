@@ -43,37 +43,43 @@ def init_device(instance):
     ''' Enumerate and initialize a device '''
     print("Incomplete")
     gpu_count = 0
-    gpu = vk.vkEnumeratePhysicalDevices(instance)
+    gpu_count = vk.vkEnumeratePhysicalDevices(instance,)
+    print("Enumerated Device: {}".format(gpu_count[0]))
     properties = vk.vkGetPhysicalDeviceFormatProperties(
-        gpu_count,
-        vk.VK_FORMAT_B8G8R8_SRGB
+        gpu_count[0],
+        vk.VK_FORMAT_B8G8R8_UINT,
     )
-    features = vk.vkGetPhysicalDeviceFeatures(gpu)
-    queue_family = vk.vkGetPhysicalDeviceQueueFamilyProperties(gpu)
+    #features = vk.vkGetPhysicalDeviceFeatures(gpu)
 
-    vk.vkCreateDevice(
-        gpu,
-        pCreateInfo = 0,
-        pAllocator = 0
+    queue_family = vk.vkGetPhysicalDeviceQueueFamilyProperties(gpu_count[0])
+    print("Queue families: {}".format(queue_family[0]))
+    device_queue_info = vk.VkDeviceQueueCreateInfo(
+        sType=vk.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+        queueFamilyIndex=1,
+        queueCount=1,
+        pQueuePriorities=1.0
     )
-    '''
+
     device_info = vk.VkDeviceCreateInfo(
         sType=vk.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-        pNext=None,
-        flags=None,
-        queueCreateInfoCount=0,
-        pQueueCreateInfos=None,
+        queueCreateInfoCount=1,
+        pQueueCreateInfos=device_queue_info,
         enabledExtensionCount=0,
         ppEnabledLayerNames=None,
         ppEnabledExtensionNames=None,
         pEnabledFeatures=None,
         enabledLayerCount=0
-    )'''
+    )
+    vk.vkCreateDevice(
+        gpu_count[0],
+        pCreateInfo = 0,
+        pAllocator = 0
+    )
 
 def main():
     ''' Temp main runner for development '''
     instance = init_instance()
-    print(init_device(instance))
+    init_device(instance)
 
 if __name__ == '__main__':
     main()
