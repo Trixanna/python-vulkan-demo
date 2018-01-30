@@ -41,18 +41,23 @@ def init_instance():
 
 def init_device(instance):
     ''' Enumerate and initialize a device '''
-    print("Incomplete")
     gpu_count = 0
     gpu_count = vk.vkEnumeratePhysicalDevices(instance,)
-    print("Enumerated Device: {}".format(gpu_count[0]))
+    for index, gpus in enumerate(gpu_count):
+        print("Enumerated Device: {} _____ {}".format(index, gpus))
     properties = vk.vkGetPhysicalDeviceFormatProperties(
         gpu_count[0],
         vk.VK_FORMAT_B8G8R8_UINT,
     )
-    #features = vk.vkGetPhysicalDeviceFeatures(gpu)
+    #features = vk.vkGetPhysicalDeviceFeatures(gpu_count[0])
 
-    queue_family = vk.vkGetPhysicalDeviceQueueFamilyProperties(gpu_count[0])
-    print("Queue families: {}".format(queue_family[0]))
+    queue_families = vk.vkGetPhysicalDeviceQueueFamilyProperties(gpu_count[0])
+    for index, queue in enumerate(queue_families):
+        print("Queue families: {} _____ {}".format(index, queue))
+        print("QFP {}".format(vk.VkQueueFamilyProperties()))
+    #print("Queue family data: {}".format(queue_family[0].data()))
+    # No data field, not aqcuiring a family properties. Researching docs a bit more...
+
     device_queue_info = vk.VkDeviceQueueCreateInfo(
         sType=vk.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
         queueFamilyIndex=1,
@@ -70,16 +75,30 @@ def init_device(instance):
         pEnabledFeatures=None,
         enabledLayerCount=0
     )
-    vk.vkCreateDevice(
+    device = vk.vkCreateDevice(
         gpu_count[0],
-        pCreateInfo = 0,
+        pCreateInfo = None,
         pAllocator = 0
     )
+
+    return device
+
+
+def destroy_device(device):
+    vk.vkDestroyDevice(device, pAllocator=0,)
 
 def main():
     ''' Temp main runner for development '''
     instance = init_instance()
-    init_device(instance)
+    device = init_device(instance)
+
+    index = [1, 2, 3, 4, 5]
+    queue = vk.vkGetDeviceQueue(device, 1, index)
+
+    destroy_device(device)
+    vk.vkDestroyInstance(instance, 0)
 
 if __name__ == '__main__':
     main()
+    # Notes: This isn't exactly what I was going for, but the cdata and structures mean that I have to re-think
+    # My plans for this vulkan_compute model. I will pick it up again later.
