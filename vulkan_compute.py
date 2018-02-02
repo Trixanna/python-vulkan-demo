@@ -53,10 +53,7 @@ def init_device(instance):
 
     queue_families = vk.vkGetPhysicalDeviceQueueFamilyProperties(gpu_count[0])
     for index, queue in enumerate(queue_families):
-        print("Queue families: {} _____ {}".format(index, queue))
-        print("QFP {}".format(vk.VkQueueFamilyProperties()))
-    #print("Queue family data: {}".format(queue_family[0].data()))
-    # No data field, not aqcuiring a family properties. Researching docs a bit more...
+        print("Compute Queue availability for index {} is {}".format(index, bool(queue.queueFlags & vk.VK_QUEUE_COMPUTE_BIT)))
 
     device_queue_info = vk.VkDeviceQueueCreateInfo(
         sType=vk.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
